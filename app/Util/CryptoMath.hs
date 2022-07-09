@@ -1,5 +1,6 @@
 module Util.CryptoMath(modAdd, modTimes, modPow, getNextPrime, isPrime, getNextBPSW, baillePSWTest,
-                       fermatPTest, floorSqrt, millerRabinTest, lucasPrimeTest) where
+                       fermatPTest, floorSqrt, millerRabinTest, lucasPrimeTest,
+                       extendedEuclideanGCD, primeFactorisation) where
                        
 import Data.List
 
@@ -137,4 +138,21 @@ baillePSWTest n
             | n `mod` x == 0 = True
             | otherwise      = cs xs
 
+
+extendedEuclideanGCD :: Integer -> Integer -> ((Integer,Integer),(Integer,Integer),Integer)
+extendedEuclideanGCD a b = eegcd a b 1 0 0 1
+    where eegcd or r os s ot t
+              | r == 0 = ((os,ot),(t,s),or)
+              | otherwise
+              = eegcd r (or - q*r) s (os - q*s) t (ot - q*t)
+              where q = or `div` r
+
+
+
+primeFactorisation :: Integer -> [Integer]
+primeFactorisation n = primeFactorisation' n 2
+    where primeFactorisation' n x
+              | baillePSWTest n = [n]
+              | n `mod` x == 0  = x:(primeFactorisation (n `div` x))
+              | otherwise       = primeFactorisation' n (getNextBPSW x)
 
