@@ -1,4 +1,4 @@
-module Util.RSA(generateKeyPair, PublicKey(..), PrivateKey(..), encrypt, decrypt) where
+module Util.RSA(generateKeyPair, createKeyPair, PublicKey(..), PrivateKey(..), encrypt, decrypt) where
 
 import Util.CryptoMath
 import System.Random
@@ -27,10 +27,8 @@ generateKeyPair g1 ip iq = g1 >>= return . randomR ip
                               >>= (\(x,y)  -> return $ createKeyPair defaultE x y)
                               
 
-encrypt :: Integer -> PublicKey -> Integer
-decrypt :: Integer -> PrivateKey -> Integer
+encrypt :: PublicKey -> Integer -> Integer
+decrypt :: PrivateKey -> Integer -> Integer
 
-encrypt m (PublicKey (e,n))  = modPow n m e
-decrypt c (PrivateKey (d,n)) = modPow n c d
-
-
+encrypt (PublicKey  (e,n)) m = modPow n m e
+decrypt (PrivateKey (d,n)) c = modPow n c d
